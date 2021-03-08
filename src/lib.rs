@@ -7,4 +7,3 @@ mod sftp;
 pub use authentication::{SshAuthenticationPassword, SshAuthenticationType};
 pub use config::SshConfiguration;
 pub use session::SshSession;
-
