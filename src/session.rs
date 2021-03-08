@@ -4,7 +4,7 @@ use std::net::TcpStream;
 use crate::authentication::SshAuthenticationType;
 use crate::config::SshConfiguration;
 use crate::known_hosts::SshKnownHosts;
-use crate::sftp::SftpReader;
+use crate::sftp::{SftpReader, SftpWriter};
 
 pub struct SshSession {
   pub config: SshConfiguration,
@@ -54,5 +54,9 @@ impl SshSession {
 
   pub fn read_over_sftp(&self, path: &str) -> Result<SftpReader, String> {
     SftpReader::new(&self.session, path)
+  }
+
+  pub fn write_over_sftp(&self, path: &str) -> Result<SftpWriter, String> {
+    SftpWriter::new(&self.session, path)
   }
 }
