@@ -1,7 +1,8 @@
 use ssh2::Session;
 use std::net::TcpStream;
 
-use crate::config::{SshAuthenticationType, SshConfiguration};
+use crate::authentication::SshAuthenticationType;
+use crate::config::SshConfiguration;
 use crate::known_hosts::SshKnownHosts;
 
 pub struct SshSession {

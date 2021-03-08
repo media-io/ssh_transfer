@@ -1,7 +1,9 @@
+mod authentication;
 mod config;
 mod known_hosts;
 mod session;
 
-pub use config::{SshAuthenticationType, SshConfiguration, SshPasswordAuthentication};
+pub use authentication::{SshAuthenticationPassword, SshAuthenticationType};
+pub use config::SshConfiguration;
 pub use session::SshSession;
 
