@@ -1,7 +1,7 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+mod config;
+mod known_hosts;
+mod session;
+
+pub use config::{SshAuthenticationType, SshConfiguration, SshPasswordAuthentication};
+pub use session::SshSession;
+
