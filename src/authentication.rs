@@ -1,4 +1,4 @@
-use crate::error::{Error, Error::AuthenticationError};
+use crate::error::{Error::AuthenticationError, Result};
 use ssh2::Session;
 use std::path::PathBuf;
 
@@ -10,7 +10,7 @@ pub enum AuthenticationType {
 }
 
 impl AuthenticationType {
-  pub(crate) fn authenticate(&self, session: &Session, username: &str) -> Result<(), Error> {
+  pub(crate) fn authenticate(&self, session: &Session, username: &str) -> Result<()> {
     if session.authenticated() {
       return Ok(());
     }

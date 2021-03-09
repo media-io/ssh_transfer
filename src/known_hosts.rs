@@ -1,4 +1,4 @@
-use crate::error::{Error, Error::KnownHostCheckError};
+use crate::error::{Error::KnownHostCheckError, Result};
 use dirs::home_dir;
 use log::{debug, info, warn};
 use ssh2::{CheckResult, HashType, KnownHostFileKind, Session};
@@ -10,7 +10,7 @@ pub struct KnownHosts {
 }
 
 impl KnownHosts {
-  pub fn new(session: &Session) -> Result<Self, Error> {
+  pub fn new(session: &Session) -> Result<Self> {
     let mut known_hosts = session.known_hosts()?;
 
     let known_hosts_file_path = home_dir()
@@ -25,12 +25,7 @@ impl KnownHosts {
     })
   }
 
-  pub fn check_remote(
-    &mut self,
-    session: &Session,
-    hostname: &str,
-    port: u16,
-  ) -> Result<(), Error> {
+  pub fn check_remote(&mut self, session: &Session, hostname: &str, port: u16) -> Result<()> {
     let (host_key, host_key_type) = session
       .host_key()
       .ok_or_else(|| KnownHostCheckError("Host key not found.".to_string()))?;

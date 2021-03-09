@@ -8,3 +8,4 @@ mod sftp;
 pub use authentication::AuthenticationType;
 pub use configuration::Configuration;
 pub use connection::Connection;
+pub use error::{Error, Result};
