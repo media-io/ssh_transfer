@@ -42,7 +42,7 @@ impl Configuration {
     self
   }
 
-  pub fn with_timeout(mut self, timeout: u32) -> Self {
+  pub fn with_timeout_ms(mut self, timeout: u32) -> Self {
     self.timeout = timeout;
     self
   }
@@ -71,7 +71,7 @@ pub fn test_configuration() {
     .with_port(12345)
     .with_username("user_name")
     .with_authentication(AuthenticationType::Password("user_password".to_string()))
-    .with_timeout(54321)
+    .with_timeout_ms(54321)
     .with_compression(false);
   assert_eq!("localhost", configuration.hostname);
   assert_eq!(12345, configuration.port);
