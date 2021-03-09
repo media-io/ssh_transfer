@@ -1,7 +1,6 @@
 use ssh2::Session;
 use std::net::TcpStream;
 
-use crate::authentication::AuthenticationType;
 use crate::configuration::Configuration;
 use crate::known_hosts::KnownHosts;
 use crate::sftp::{SftpReader, SftpWriter};
@@ -34,22 +33,17 @@ impl Connection {
     Ok(session)
   }
 
-  pub fn connect(&self) -> Result<(), String> {
+  pub fn start(&self) -> Result<(), String> {
     let mut hosts = KnownHosts::new(&self.session)?;
     hosts.check_remote(&self.session, &self.config.hostname, self.config.port)?;
     self.authenticate()
   }
 
   fn authenticate(&self) -> Result<(), String> {
-    match &self.config.authentication {
-      AuthenticationType::Anonymous => {
-        unimplemented!()
-      }
-      AuthenticationType::Password(login) => login.authenticate(&self.session),
-      AuthenticationType::KeyFile(_key_file_path) => {
-        unimplemented!()
-      }
-    }
+    self
+      .config
+      .authentication
+      .authenticate(&self.session, &self.config.username)
   }
 
   pub fn read_over_sftp(&self, path: &str) -> Result<SftpReader, String> {
