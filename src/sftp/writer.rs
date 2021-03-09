@@ -1,4 +1,4 @@
-use crate::error::{Error, Error::SftpError};
+use crate::error::{Error::SftpError, Result};
 use ssh2::{File, OpenFlags, OpenType, Session};
 use std::{io::Write, path::Path};
 
@@ -8,7 +8,7 @@ pub struct SftpWriter {
 }
 
 impl SftpWriter {
-  pub fn new(session: &Session, path: &str) -> Result<Self, Error> {
+  pub fn new(session: &Session, path: &str) -> Result<Self> {
     let file = session.sftp()?.open_mode(
       Path::new(path),
       OpenFlags::WRITE | OpenFlags::TRUNCATE,
@@ -21,7 +21,7 @@ impl SftpWriter {
     })
   }
 
-  pub fn get_size(&mut self) -> Result<u64, Error> {
+  pub fn get_size(&mut self) -> Result<u64> {
     self
       .file
       .stat()?
@@ -31,11 +31,11 @@ impl SftpWriter {
 }
 
 impl Write for SftpWriter {
-  fn write(&mut self, buf: &[u8]) -> Result<usize, std::io::Error> {
+  fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
     self.file.write(buf)
   }
 
-  fn flush(&mut self) -> Result<(), std::io::Error> {
+  fn flush(&mut self) -> std::io::Result<()> {
     self.file.flush()
   }
 }

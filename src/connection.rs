@@ -1,5 +1,5 @@
 use crate::configuration::Configuration;
-use crate::error::Error;
+use crate::error::Result;
 use crate::known_hosts::KnownHosts;
 use crate::sftp::{SftpReader, SftpWriter};
 use ssh2::Session;
@@ -11,7 +11,7 @@ pub struct Connection {
 }
 
 impl Connection {
-  pub fn new(config: &Configuration) -> Result<Self, Error> {
+  pub fn new(config: &Configuration) -> Result<Self> {
     let session = Self::open_session(config)?;
     Ok(Connection {
       config: config.clone(),
@@ -19,7 +19,7 @@ impl Connection {
     })
   }
 
-  fn open_session(config: &Configuration) -> Result<Session, Error> {
+  fn open_session(config: &Configuration) -> Result<Session> {
     let tcp_stream = TcpStream::connect((config.hostname.as_str(), config.port))?;
 
     let mut session = Session::new()?;
@@ -32,24 +32,24 @@ impl Connection {
     Ok(session)
   }
 
-  pub fn start(&self) -> Result<(), Error> {
+  pub fn start(&self) -> Result<()> {
     let mut hosts = KnownHosts::new(&self.session)?;
     hosts.check_remote(&self.session, &self.config.hostname, self.config.port)?;
     self.authenticate()
   }
 
-  fn authenticate(&self) -> Result<(), Error> {
+  fn authenticate(&self) -> Result<()> {
     self
       .config
       .authentication
       .authenticate(&self.session, &self.config.username)
   }
 
-  pub fn read_over_sftp(&self, path: &str) -> Result<SftpReader, Error> {
+  pub fn read_over_sftp(&self, path: &str) -> Result<SftpReader> {
     SftpReader::new(&self.session, path)
   }
 
-  pub fn write_over_sftp(&self, path: &str) -> Result<SftpWriter, Error> {
+  pub fn write_over_sftp(&self, path: &str) -> Result<SftpWriter> {
     SftpWriter::new(&self.session, path)
   }
 }
