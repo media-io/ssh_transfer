@@ -1,3 +1,4 @@
+use crate::error::{Error, Error::AuthenticationError};
 use ssh2::Session;
 use std::path::PathBuf;
 
@@ -9,14 +10,13 @@ pub enum AuthenticationType {
 }
 
 impl AuthenticationType {
-  pub(crate) fn authenticate(&self, session: &Session, username: &str) -> Result<(), String> {
+  pub(crate) fn authenticate(&self, session: &Session, username: &str) -> Result<(), Error> {
     if session.authenticated() {
       return Ok(());
     }
 
     let authentication_methods: Vec<String> = session
-      .auth_methods(username)
-      .map_err(|e| e.to_string())?
+      .auth_methods(username)?
       .split(',')
       .map(String::from)
       .collect();
@@ -30,15 +30,16 @@ impl AuthenticationType {
       }
       AuthenticationType::Password(password) => {
         if authentication_methods.contains(&"password".to_string()) {
-          session
-            .userauth_password(username, password)
-            .map_err(|e| e.to_string())?;
+          session.userauth_password(username, password)?;
         }
       }
     }
 
     if !session.authenticated() {
-      return Err(format!("Authentication failed for user: {}", username));
+      return Err(AuthenticationError(format!(
+        "Could not authenticate user: {}.",
+        username
+      )));
     }
 
     Ok(())

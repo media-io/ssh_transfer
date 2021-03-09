@@ -1,3 +1,4 @@
+use crate::error::{Error, Error::SftpError};
 use ssh2::{File, Session};
 use std::{io::Read, path::Path};
 
@@ -7,25 +8,20 @@ pub struct SftpReader {
 }
 
 impl SftpReader {
-  pub fn new(session: &Session, path: &str) -> Result<Self, String> {
-    let file = session
-      .sftp()
-      .map_err(|e| e.message().to_string())?
-      .open(Path::new(path))
-      .map_err(|e| e.message().to_string())?;
+  pub fn new(session: &Session, path: &str) -> Result<Self, Error> {
+    let file = session.sftp()?.open(Path::new(path))?;
     Ok(SftpReader {
       path: path.to_string(),
       file,
     })
   }
 
-  pub fn get_size(&mut self) -> Result<u64, String> {
+  pub fn get_size(&mut self) -> Result<u64, Error> {
     self
       .file
-      .stat()
-      .map_err(|e| e.message().to_string())?
+      .stat()?
       .size
-      .ok_or_else(|| format!("Cannot retrieve size for path: {}", self.path))
+      .ok_or_else(|| SftpError(format!("Cannot retrieve size for path: {}", self.path)))
   }
 }
 

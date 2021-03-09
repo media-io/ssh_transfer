@@ -1,6 +1,7 @@
 mod authentication;
 mod configuration;
 mod connection;
+mod error;
 mod known_hosts;
 mod sftp;
 
