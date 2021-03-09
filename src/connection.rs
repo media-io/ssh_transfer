@@ -1,26 +1,26 @@
 use ssh2::Session;
 use std::net::TcpStream;
 
-use crate::authentication::SshAuthenticationType;
-use crate::config::SshConfiguration;
-use crate::known_hosts::SshKnownHosts;
+use crate::authentication::AuthenticationType;
+use crate::configuration::Configuration;
+use crate::known_hosts::KnownHosts;
 use crate::sftp::{SftpReader, SftpWriter};
 
-pub struct SshSession {
-  pub config: SshConfiguration,
+pub struct Connection {
+  pub config: Configuration,
   pub session: Session,
 }
 
-impl SshSession {
-  pub fn new(config: &SshConfiguration) -> Result<Self, String> {
+impl Connection {
+  pub fn new(config: &Configuration) -> Result<Self, String> {
     let session = Self::open_session(config)?;
-    Ok(SshSession {
+    Ok(Connection {
       config: config.clone(),
       session,
     })
   }
 
-  fn open_session(config: &SshConfiguration) -> Result<Session, String> {
+  fn open_session(config: &Configuration) -> Result<Session, String> {
     let tcp_stream =
       TcpStream::connect((config.hostname.as_str(), config.port)).map_err(|e| e.to_string())?;
 
@@ -35,18 +35,18 @@ impl SshSession {
   }
 
   pub fn connect(&self) -> Result<(), String> {
-    let mut known_hosts = SshKnownHosts::new(&self.session)?;
-    known_hosts.check_remote(&self.session, &self.config.hostname, self.config.port)?;
+    let mut hosts = KnownHosts::new(&self.session)?;
+    hosts.check_remote(&self.session, &self.config.hostname, self.config.port)?;
     self.authenticate()
   }
 
   fn authenticate(&self) -> Result<(), String> {
     match &self.config.authentication {
-      SshAuthenticationType::Anonymous => {
+      AuthenticationType::Anonymous => {
         unimplemented!()
       }
-      SshAuthenticationType::Password(login) => login.authenticate(&self.session),
-      SshAuthenticationType::KeyFile(_key_file_path) => {
+      AuthenticationType::Password(login) => login.authenticate(&self.session),
+      AuthenticationType::KeyFile(_key_file_path) => {
         unimplemented!()
       }
     }

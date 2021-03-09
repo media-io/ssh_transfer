@@ -1,14 +1,14 @@
 use ssh2::Session;
 
 #[derive(Clone, Debug)]
-pub struct SshAuthenticationPassword {
+pub struct AuthenticationPassword {
   pub username: String,
   pub password: String,
 }
 
-impl SshAuthenticationPassword {
+impl AuthenticationPassword {
   pub fn new(username: &str, password: &str) -> Self {
-    SshAuthenticationPassword {
+    AuthenticationPassword {
       username: username.to_string(),
       password: password.to_string(),
     }

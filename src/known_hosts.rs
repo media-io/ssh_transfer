@@ -1,14 +1,14 @@
 use dirs::home_dir;
 use log::{debug, info, warn};
-use ssh2::{CheckResult, HashType, KnownHostFileKind, KnownHosts, Session};
+use ssh2::{CheckResult, HashType, KnownHostFileKind, Session};
 use std::path::PathBuf;
 
-pub struct SshKnownHosts {
-  known_hosts: KnownHosts,
+pub struct KnownHosts {
+  known_hosts: ssh2::KnownHosts,
   known_hosts_file_path: PathBuf,
 }
 
-impl SshKnownHosts {
+impl KnownHosts {
   pub fn new(session: &Session) -> Result<Self, String> {
     let mut known_hosts = session.known_hosts().map_err(|e| e.to_string())?;
 
@@ -20,7 +20,7 @@ impl SshKnownHosts {
       .read_file(&known_hosts_file_path, KnownHostFileKind::OpenSSH)
       .map_err(|e| e.to_string())?;
 
-    Ok(SshKnownHosts {
+    Ok(KnownHosts {
       known_hosts,
       known_hosts_file_path,
     })

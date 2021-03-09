@@ -1,10 +1,10 @@
 mod password;
 
-pub use password::SshAuthenticationPassword;
+pub use password::AuthenticationPassword;
 
 #[derive(Clone, Debug)]
-pub enum SshAuthenticationType {
+pub enum AuthenticationType {
   Anonymous,
-  Password(SshAuthenticationPassword),
+  Password(AuthenticationPassword),
   KeyFile(String),
 }

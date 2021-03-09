@@ -1,23 +1,23 @@
-use crate::authentication::SshAuthenticationType;
+use crate::authentication::AuthenticationType;
 
 #[derive(Clone, Debug)]
-pub struct SshConfiguration {
+pub struct Configuration {
   pub hostname: String,
   pub port: u16,
-  pub authentication: SshAuthenticationType,
+  pub authentication: AuthenticationType,
   pub timeout: u32,
   pub compress: bool,
 }
 
-impl SshConfiguration {
+impl Configuration {
   pub fn new(
     hostname: &str,
     port: Option<u16>,
-    authentication: SshAuthenticationType,
+    authentication: AuthenticationType,
     timeout: Option<u32>,
     compress: Option<bool>,
   ) -> Self {
-    SshConfiguration {
+    Configuration {
       hostname: hostname.to_string(),
       // set default port to 22
       port: port.unwrap_or(22),

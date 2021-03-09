@@ -1,9 +1,9 @@
 mod authentication;
-mod config;
+mod configuration;
+mod connection;
 mod known_hosts;
-mod session;
 mod sftp;
 
-pub use authentication::{SshAuthenticationPassword, SshAuthenticationType};
-pub use config::SshConfiguration;
-pub use session::SshSession;
+pub use authentication::{AuthenticationPassword, AuthenticationType};
+pub use configuration::Configuration;
+pub use connection::Connection;
