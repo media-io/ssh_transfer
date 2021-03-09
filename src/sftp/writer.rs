@@ -1,7 +1,5 @@
-use std::io::Write;
-use std::path::Path;
-
 use ssh2::{File, OpenFlags, OpenType, Session};
+use std::{io::Write, path::Path};
 
 pub struct SftpWriter {
   path: String,

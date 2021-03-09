@@ -1,7 +1,5 @@
-use std::io::Read;
-use std::path::Path;
-
 use ssh2::{File, Session};
+use std::{io::Read, path::Path};
 
 pub struct SftpReader {
   path: String,
