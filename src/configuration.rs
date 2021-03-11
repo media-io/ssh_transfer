@@ -8,6 +8,7 @@ pub struct Configuration {
   pub authentication: AuthenticationType,
   pub timeout: u32,
   pub compress: bool,
+  pub trust_host: bool,
 }
 
 impl Configuration {
@@ -24,6 +25,8 @@ impl Configuration {
       timeout: 10000,
       // attempt to negotiate compression
       compress: true,
+      // do not accept connection to unknown host
+      trust_host: false,
     }
   }
 
@@ -51,6 +54,11 @@ impl Configuration {
     self.compress = compress;
     self
   }
+
+  pub fn with_host_trust(mut self, trust_host: bool) -> Self {
+    self.trust_host = trust_host;
+    self
+  }
 }
 
 #[test]
@@ -66,13 +74,15 @@ pub fn test_configuration() {
   );
   assert_eq!(10000, configuration.timeout);
   assert_eq!(true, configuration.compress);
+  assert_eq!(false, configuration.trust_host);
 
   let configuration = configuration
     .with_port(12345)
     .with_username("user_name")
     .with_authentication(AuthenticationType::Password("user_password".to_string()))
     .with_timeout_ms(54321)
-    .with_compression(false);
+    .with_compression(false)
+    .with_host_trust(true);
   assert_eq!("localhost", configuration.hostname);
   assert_eq!(12345, configuration.port);
   assert_eq!("user_name", configuration.username);
@@ -82,4 +92,5 @@ pub fn test_configuration() {
   );
   assert_eq!(54321, configuration.timeout);
   assert_eq!(false, configuration.compress);
+  assert_eq!(true, configuration.trust_host);
 }

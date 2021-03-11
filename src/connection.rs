@@ -1,5 +1,6 @@
 use crate::configuration::Configuration;
 use crate::error::Result;
+use crate::known_host::KnownHost;
 use crate::known_hosts::KnownHosts;
 use crate::sftp::{SftpReader, SftpWriter};
 use ssh2::Session;
@@ -8,14 +9,17 @@ use std::net::TcpStream;
 pub struct Connection {
   pub config: Configuration,
   pub session: Session,
+  pub known_hosts: KnownHosts,
 }
 
 impl Connection {
   pub fn new(config: &Configuration) -> Result<Self> {
     let session = Self::open_session(config)?;
+    let known_hosts = KnownHosts::new(&session)?;
     Ok(Connection {
       config: config.clone(),
       session,
+      known_hosts,
     })
   }
 
@@ -32,9 +36,17 @@ impl Connection {
     Ok(session)
   }
 
-  pub fn start(&self) -> Result<()> {
-    let mut hosts = KnownHosts::new(&self.session)?;
-    hosts.check_remote(&self.session, &self.config.hostname, self.config.port)?;
+  pub fn add_known_host(&mut self, known_host: &KnownHost) -> Result<()> {
+    self.known_hosts.add_known_host(known_host)
+  }
+
+  pub fn start(&mut self) -> Result<()> {
+    self.known_hosts.check_remote(
+      &self.session,
+      &self.config.hostname,
+      self.config.port,
+      self.config.trust_host,
+    )?;
     self.authenticate()
   }
 
