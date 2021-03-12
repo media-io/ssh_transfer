@@ -3,7 +3,7 @@ use crate::error::Result;
 use crate::known_host::KnownHost;
 use crate::known_hosts::KnownHosts;
 use crate::sftp::{SftpReader, SftpWriter};
-use ssh2::Session;
+use ssh2::{HostKeyType, Session};
 use std::net::TcpStream;
 
 pub struct Connection {
@@ -40,6 +40,13 @@ impl Connection {
 
   pub fn add_known_host(&mut self, known_host: &KnownHost) -> Result<()> {
     self.known_hosts.add_known_host(known_host)
+  }
+
+  pub fn get_remote_host_key(&self) -> Option<(String, HostKeyType)> {
+    self
+      .session
+      .host_key()
+      .map(|(key, key_type)| (base64::encode(key), key_type))
   }
 
   pub fn start(&mut self) -> Result<()> {
