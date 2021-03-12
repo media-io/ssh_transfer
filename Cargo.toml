@@ -14,6 +14,7 @@ edition = "2018"
 base64 = "0.13"
 dirs = "3.0.1"
 log = "0.4"
+regex = "1"
 ssh2 = "0.9"
 whoami = "1.1"
 
