@@ -12,6 +12,8 @@ pub struct Connection {
   pub known_hosts: KnownHosts,
 }
 
+unsafe impl Send for Connection {}
+
 impl Connection {
   pub fn new(config: &Configuration) -> Result<Self> {
     let session = Self::open_session(config)?;
