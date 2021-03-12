@@ -1,6 +1,6 @@
 [package]
 name = "ssh-transfer"
-version = "0.1.1"
+version = "0.2.0"
 authors = [
   "Valentin NOEL <valentin.noel@media-io.com>",
   "Marc-Antoine Arnaud <maarnaud@media-io.com>",
