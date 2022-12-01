@@ -2,7 +2,7 @@ use crate::error::{Error::AuthenticationError, Result};
 use ssh2::Session;
 use std::path::PathBuf;
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum AuthenticationType {
   Interactive,
   KeyFile(PathBuf),
@@ -15,12 +15,6 @@ impl AuthenticationType {
       return Ok(());
     }
 
-    let authentication_methods: Vec<String> = session
-      .auth_methods(username)?
-      .split(',')
-      .map(String::from)
-      .collect();
-
     match &self {
       AuthenticationType::Interactive => {
         unimplemented!()
@@ -29,7 +23,12 @@ impl AuthenticationType {
         unimplemented!()
       }
       AuthenticationType::Password(password) => {
-        if authentication_methods.contains(&"password".to_string()) {
+        if session
+          .auth_methods(username)?
+          .split(',')
+          .map(String::from)
+          .any(|method| method == *"password")
+        {
           session.userauth_password(username, password)?;
         }
       }
