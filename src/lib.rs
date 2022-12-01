@@ -11,3 +11,4 @@ pub use configuration::Configuration;
 pub use connection::Connection;
 pub use error::{Error, Result};
 pub use known_host::KnownHost;
+pub use sftp::{SftpEntry, SftpEntryKind};
