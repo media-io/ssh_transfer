@@ -2,5 +2,5 @@
 
 ### List of supported protocols:
 
-- [ ] SFTP
+- [x] SFTP
 - [ ] SCP
