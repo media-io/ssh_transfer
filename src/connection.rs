@@ -2,7 +2,7 @@ use crate::configuration::Configuration;
 use crate::error::Result;
 use crate::known_host::KnownHost;
 use crate::known_hosts::KnownHosts;
-use crate::sftp::{SftpReader, SftpWriter};
+use crate::sftp::{list, SftpEntry, SftpReader, SftpWriter};
 use ssh2::{HostKeyType, Session};
 use std::net::TcpStream;
 
@@ -72,5 +72,9 @@ impl Connection {
 
   pub fn write_over_sftp(&self, path: &str) -> Result<SftpWriter> {
     SftpWriter::new(&self.session, path)
+  }
+
+  pub fn list_over_sftp(&self, path: &str) -> Result<Vec<SftpEntry>> {
+    list(&self.session, path)
   }
 }

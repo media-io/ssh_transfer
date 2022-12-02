@@ -114,7 +114,7 @@ impl KnownHosts {
     if let Some(known_hosts_file_path) = &self.known_hosts_file_path {
       self
         .known_hosts
-        .write_file(&known_hosts_file_path, KnownHostFileKind::OpenSSH)?;
+        .write_file(known_hosts_file_path, KnownHostFileKind::OpenSSH)?;
     }
     Ok(())
   }

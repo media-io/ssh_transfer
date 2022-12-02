@@ -57,10 +57,10 @@ impl From<regex::Error> for Error {
   }
 }
 
-impl Into<std::io::Error> for Error {
-  fn into(self) -> std::io::Error {
+impl From<Error> for std::io::Error {
+  fn from(error: Error) -> Self {
     use std::io::ErrorKind;
-    match self {
+    match error {
       Error::Base64DecodingError(error) => {
         std::io::Error::new(ErrorKind::Other, format!("Base64: {}", error))
       }
